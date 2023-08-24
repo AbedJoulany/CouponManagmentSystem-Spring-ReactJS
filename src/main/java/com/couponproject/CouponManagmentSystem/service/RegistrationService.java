@@ -29,4 +29,19 @@ public class RegistrationService {
                 user.getEmail(),
                 user.getPassword()));
     }
+
+    public void updateCompany(User user) throws SQLException {
+        adminService.updateCompany(new Company(user.getId(),
+                user.getFirstname(),
+                user.getEmail(),
+                user.getPassword()));
+    }
+
+    public void updateCustomer(User user) throws SQLException {
+        adminService.updateCustomer(new Customer(user.getId(),
+                user.getFirstname(),
+                user.getLastname(),
+                user.getEmail(),
+                user.getPassword()));
+    }
 }

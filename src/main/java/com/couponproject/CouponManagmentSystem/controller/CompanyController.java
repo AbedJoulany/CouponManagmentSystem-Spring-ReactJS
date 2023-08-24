@@ -17,7 +17,6 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/company")
-@PreAuthorize("hasRole('Company')")
 public class CompanyController{
     @Autowired
     CompanyServices service;

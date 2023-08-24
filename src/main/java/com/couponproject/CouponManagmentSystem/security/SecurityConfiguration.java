@@ -27,6 +27,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**")
                 .permitAll()
+                .requestMatchers("/api/coupons/**")
+                .permitAll()
                 .requestMatchers("/api/admin/**").hasRole(Role.Administrator.name())
                 .requestMatchers("/api/company/**").hasRole(Role.Company.name())
                 .requestMatchers("/api/customer/**").hasRole(Role.Customer.name())
@@ -37,7 +39,10 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers() // Configure headers
+                .httpStrictTransportSecurity().disable() // Disable X-Frame-Options header to allow embedding in iframes
+                ;
 
         return http.build();
     }

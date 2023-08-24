@@ -25,10 +25,7 @@ public class Coupon implements Serializable {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-    @ManyToOne
-    @JoinColumn(name = "category_id")
     private Category category;
-
     private String title;
     private String description;
     private Date startDate;

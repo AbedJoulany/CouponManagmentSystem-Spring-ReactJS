@@ -14,7 +14,6 @@ import java.util.Optional;
 @CrossOrigin
 @RestController
 @RequestMapping("/api/customer")
-@PreAuthorize("hasRole('Customer')")
 public class CustomerController{
 
     @Autowired
@@ -31,7 +30,6 @@ public class CustomerController{
         Customer customer = getCustomer(authentication);
         return service.getCustomerCoupons(customer.getId());
     }
-
 
     @GetMapping(value="/getCustomerCouponsByCategory")
     public List<Coupon> getCustomerCoupons(@RequestParam Category category, Authentication authentication) {

@@ -1,15 +1,10 @@
 package com.couponproject.CouponManagmentSystem.core;
 
-import jakarta.persistence.*;
+public enum Category {
 
-@Entity
-@Table(name="CATEGORIES")
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    Food,
+    Electricity,
+    Restaurant,
+    Vacation,
 
-    private String name;
-
-    // Getters and setters
 }

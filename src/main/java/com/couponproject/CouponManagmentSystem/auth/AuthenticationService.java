@@ -20,12 +20,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-/*    @Autowired
-    private AdminServices adminService;
-    @Autowired
-    private CompanyServices companyService;
-    @Autowired
-    private CustomerServices customerServices;*/
     private final RegistrationService registrationService;
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -64,6 +58,34 @@ public class AuthenticationService {
         switch(request.getRole()){
             case Company -> registrationService.registerCompany(user);
             case Customer -> registrationService.registerCustomer(user);
+        }
+        Optional<User> existingUser = repository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+        }
+        var savedUser = repository.save(user);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        saveUserToken(savedUser, jwtToken);
+
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+    public AuthenticationResponse update(RegisterRequest request) throws SQLException {
+        User user = User.builder()
+                .id(request.getId())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .build();
+
+        switch(request.getRole()){
+            case Company -> registrationService.updateCompany(user);
+            case Customer -> registrationService.updateCustomer(user);
         }
         Optional<User> existingUser = repository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {

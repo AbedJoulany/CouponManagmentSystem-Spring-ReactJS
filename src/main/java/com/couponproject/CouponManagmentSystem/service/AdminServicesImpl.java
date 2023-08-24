@@ -46,6 +46,7 @@ public class AdminServicesImpl  implements AdminServices {
     }
     @Override
     public void updateCompany(Company company) throws SQLException {
+
         Optional<Company> c = companyRepository.findById(company.getId());
         if(c.isPresent() && c.get().getName().equals(company.getName()))
         {
@@ -79,7 +80,7 @@ public class AdminServicesImpl  implements AdminServices {
     @Override
     public void addCustomer(Customer customer) throws SQLException {
 
-        if(!customerRepository.findByEmailAndPassword(customer.getEmail(), customer.getPassword()))
+        if(customerRepository.findByEmailAndPassword(customer.getEmail(), customer.getPassword()) ==null)
         {
             customerRepository.save(customer);
         }
@@ -90,13 +91,12 @@ public class AdminServicesImpl  implements AdminServices {
     public void updateCustomer(Customer customer) throws SQLException {
 
         Optional<Customer> c = customerRepository.findById(customer.getId());
-        if(c.isPresent() &&
-                customerRepository.findByEmailAndPassword(customer.getEmail(), customer.getPassword()))
+        if(c.isPresent())
         {
             customerRepository.save(customer);
         }
         else
-            throw new SQLException("customer_id and customer name can`t be updated");
+            throw new SQLException("customer_id can`t be updated");
     }
     @Override
     public void deleteCustomer(Long customerID) throws SQLException {

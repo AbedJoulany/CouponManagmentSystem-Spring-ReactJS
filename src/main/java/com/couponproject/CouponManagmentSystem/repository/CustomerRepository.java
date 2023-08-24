@@ -1,5 +1,6 @@
 package com.couponproject.CouponManagmentSystem.repository;
 
+import com.couponproject.CouponManagmentSystem.core.Company;
 import com.couponproject.CouponManagmentSystem.core.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
 
-    boolean findByEmailAndPassword(String email, String password);
+    Customer findByEmailAndPassword(String email, String password);
 
     @Query(value = "SELECT * FROM customers WHERE email=?1", nativeQuery = true)
     Optional<Customer> findByEmail(String email);
