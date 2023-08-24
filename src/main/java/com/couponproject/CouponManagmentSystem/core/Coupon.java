@@ -1,5 +1,6 @@
 package com.couponproject.CouponManagmentSystem.core;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Entity
 @Table(name = "COUPONS")
 @JsonIdentityInfo( generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Coupon implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

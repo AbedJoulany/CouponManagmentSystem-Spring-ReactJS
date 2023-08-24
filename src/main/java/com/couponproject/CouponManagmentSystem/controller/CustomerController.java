@@ -3,6 +3,8 @@ package com.couponproject.CouponManagmentSystem.controller;
 import com.couponproject.CouponManagmentSystem.core.*;
 import com.couponproject.CouponManagmentSystem.service.CustomerServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -20,27 +22,38 @@ public class CustomerController{
     CustomerServices service;
 
     @PostMapping(value="/purchaseCoupon")
-    public void purchaseCoupon(@RequestBody Coupon coupon, Authentication authentication) throws SQLException {
+    public ResponseEntity<Void> purchaseCoupon(@RequestBody Coupon coupon, Authentication authentication) throws SQLException {
         Customer customer = getCustomer(authentication);
         service.purchaseCoupon(customer.getId(), coupon);
+        return ResponseEntity.ok().build();
     }
-
-    @GetMapping(value="/getCustomerCoupons")
-    public List<Coupon> getCustomerCoupons(Authentication authentication) {
+    @PostMapping(value="/purchaseCoupons",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> purchaseCoupons(@RequestBody List<Coupon> coupons, Authentication authentication) throws SQLException {
         Customer customer = getCustomer(authentication);
-        return service.getCustomerCoupons(customer.getId());
+        for(Coupon coupon: coupons)
+        {
+            service.purchaseCoupon(customer.getId(), coupon);
+        }
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping(value="/getCustomerCoupons")
+
+    public ResponseEntity<List<Coupon>> getCustomerCoupons(Authentication authentication) {
+        Customer customer = getCustomer(authentication);
+        System.out.println("Customer: "+authentication);
+        return ResponseEntity.ok(service.getCustomerCoupons(customer.getId()));
     }
 
     @GetMapping(value="/getCustomerCouponsByCategory")
-    public List<Coupon> getCustomerCoupons(@RequestParam Category category, Authentication authentication) {
+    public ResponseEntity<List<Coupon>> getCustomerCoupons(@RequestParam Category category, Authentication authentication) {
         Customer customer = getCustomer(authentication);
-        return service.getCustomerCoupons(customer.getId(), category);
+        return ResponseEntity.ok(service.getCustomerCoupons(customer.getId(), category));
     }
 
     @GetMapping(value="/getCustomerCouponsByMaxPrice")
-    public List<Coupon> getCustomerCoupons(@RequestParam double maxPrice, Authentication authentication){
+    public ResponseEntity<List<Coupon>> getCustomerCoupons(@RequestParam double maxPrice, Authentication authentication){
         Customer customer = getCustomer(authentication);
-        return service.getCustomerCoupons(customer.getId(), maxPrice);
+        return ResponseEntity.ok(service.getCustomerCoupons(customer.getId(), maxPrice));
     }
 
     @GetMapping(value="/getCustomerDetails")
@@ -50,7 +63,7 @@ public class CustomerController{
     }
     private Customer getCustomer(Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
-        Optional<Customer> customerOptional = service.getCustomerById(currentUser.getId());
+        Optional<Customer> customerOptional = service.getCustomerByEmail(currentUser.getEmail());
         return customerOptional.orElse(null);
     }
 }

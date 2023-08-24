@@ -4,6 +4,7 @@ package com.couponproject.CouponManagmentSystem.service;
 import com.couponproject.CouponManagmentSystem.core.Category;
 import com.couponproject.CouponManagmentSystem.core.Coupon;
 import com.couponproject.CouponManagmentSystem.core.Customer;
+import com.couponproject.CouponManagmentSystem.core.CustomersVsCoupons;
 import com.couponproject.CouponManagmentSystem.repository.CouponRepository;
 import com.couponproject.CouponManagmentSystem.repository.CustomerRepository;
 import com.couponproject.CouponManagmentSystem.repository.Customers_vs_CouponsRepository;
@@ -56,9 +57,11 @@ public class CustomerServicesImpl  implements  CustomerServices{
     public List<Coupon> getCustomerCoupons(Long customerId) {
         List<Coupon> customerCoupons = new ArrayList<>();
 
-        Set<Coupon> purchasedCoupons = customers_vs_couponsRepository.findPurchaseByCoustomerID(customerId);
-        for (Coupon coupon : purchasedCoupons) {
-            couponRepository.findById(coupon.getId()).ifPresent(customerCoupons::add);
+        List<CustomersVsCoupons> purchasedCoupons = customers_vs_couponsRepository.findPurchaseByCoustomerID(customerId);
+
+        for (CustomersVsCoupons purchasedCoupon : purchasedCoupons) {
+            Coupon coupon = purchasedCoupon.getCoupon();
+            customerCoupons.add(couponRepository.getCouponById(coupon.getId()));
         }
         return customerCoupons;
     }
@@ -74,11 +77,16 @@ public class CustomerServicesImpl  implements  CustomerServices{
     @Override
     public void purchaseCoupon(Long customerId, Coupon coupon) throws SQLException {
         Date currentDate = new Date();
-        List<Coupon> purchasedCoupons  = couponRepository.findPurchaseByCouponID(coupon.getId(),customerId);
+        Optional<CustomersVsCoupons> couponListOptional   = customers_vs_couponsRepository.findPurchaseByCouponIDAndCustomerID(coupon.getId(),customerId);
 
-        boolean alreadyPurchased = purchasedCoupons.contains(coupon);
-        boolean couponAvailable = couponRepository.findById(coupon.getId()).map(Coupon::getAmount).orElse(0) > 0;
-        boolean couponNotExpired = coupon.getEndDate().after(currentDate);
+        boolean alreadyPurchased = false;
+        boolean couponAvailable = true;
+        boolean couponNotExpired = true;
+        if (couponListOptional .isPresent()) {
+            alreadyPurchased = true;
+            couponAvailable = couponRepository.findById(coupon.getId()).map(Coupon::getAmount).orElse(0) > 0;
+            couponNotExpired = coupon.getEndDate().after(currentDate);
+        }
 
         if (!alreadyPurchased && couponAvailable && couponNotExpired)
             {
@@ -93,5 +101,10 @@ public class CustomerServicesImpl  implements  CustomerServices{
                     (!couponAvailable ? "Coupons are out of stock\n" : "") +
                     (!couponNotExpired ? "Coupon has expired\n" : ""));
         }
+    }
+
+    @Override
+    public Optional<Customer> getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
     }
 }

@@ -20,7 +20,6 @@ import java.util.Optional;
 public class CompanyController{
     @Autowired
     CompanyServices service;
-
     @PostMapping(value="/addCoupon")
     public void addCoupon(@RequestBody Coupon newCoupon, Authentication authentication) throws SQLException {
         Company company = getCompany(authentication);

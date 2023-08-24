@@ -24,4 +24,6 @@ public interface CustomerServices {
     List<Coupon> getCustomerCoupons(Long customerId, double maxPrice);
 
     void purchaseCoupon(Long customerId,Coupon coupon) throws SQLException;
+
+    Optional<Customer> getCustomerByEmail(String email);
 }
