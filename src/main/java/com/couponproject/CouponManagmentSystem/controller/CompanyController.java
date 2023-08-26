@@ -31,8 +31,8 @@ public class CompanyController{
     }
 
     @DeleteMapping(value="/deleteCoupon")
-    public void deleteCoupon(@RequestParam Long couponID) throws SQLException {
-        service.deleteCoupon(couponID);
+    public void deleteCoupon(@RequestParam Long id) throws SQLException {
+        service.deleteCoupon(id);
     }
 
     @GetMapping(value="/getCompanyCoupons")
@@ -58,7 +58,7 @@ public class CompanyController{
 
     private Company getCompany(Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
-        Optional<Company> companyOptional = service.getCompanyById(currentUser.getId());
+        Optional<Company> companyOptional = service.getCompanyByEmail(currentUser.getEmail());
         return companyOptional.orElse(null);
     }
 

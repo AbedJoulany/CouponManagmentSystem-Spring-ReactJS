@@ -44,6 +44,8 @@ public class CompanyServicesImpl implements CompanyServices {
         }
         Optional<Company> company = companyRepository.findById(companyID);
         newCoupon.setCompany(company.orElseThrow(() -> new SQLException("Company not found")));
+
+        System.out.println("newCoupon: "+ newCoupon);
         couponRepository.save(newCoupon);
     }
 
@@ -97,6 +99,11 @@ public class CompanyServicesImpl implements CompanyServices {
     }
     @Override
     public Optional<Company> getCompanyDetails(String email) {
+        return companyRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<Company> getCompanyByEmail(String email) {
         return companyRepository.findByEmail(email);
     }
 }

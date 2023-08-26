@@ -24,4 +24,6 @@ public interface CompanyServices {
     public List<Coupon> getCompanyCoupons(Long companyID, Category category);
     public List<Coupon> getCompanyCoupons(Long companyID, double maxPrice);
     Optional<Company> getCompanyDetails(String email);
+
+    Optional<Company> getCompanyByEmail(String email);
 }
