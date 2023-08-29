@@ -26,7 +26,8 @@ public class CompanyController{
         service.addCoupon(company.getId(), newCoupon);
     }
     @PutMapping(value="/updateCoupon")
-    public void updateCoupon(@RequestBody Coupon updetedCoupon) throws SQLException {
+    public void updateCoupon(@RequestBody Coupon updetedCoupon,Authentication authentication) throws SQLException {
+        updetedCoupon.setCompany(getCompany(authentication));
         service.updateCoupon(updetedCoupon);
     }
 

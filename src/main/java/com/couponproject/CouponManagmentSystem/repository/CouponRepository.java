@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +25,15 @@ public interface CouponRepository extends JpaRepository<Coupon,Long> {
     List<Coupon> getByCompanyID(@Param("companyId") Long id);
     @Query(value = "SELECT * FROM coupons WHERE id=?1", nativeQuery = true)
     Coupon getCouponById(Long id);
-    @Query(value = "UPDATE coupons SET company_id=?1, category=?2, title=?3, description=?4,start_date=?5, end_date=?6,amount=?7,price=?8,image=?9 WHERE id=?", nativeQuery = true)
-    void updateCoupon(Coupon updetedCoupon);
+    @Query(value = "UPDATE coupons SET company_id=:companyId, category=:category, title=:title," +
+            " description=:description, start_date=:startDate, end_date=:endDate," +
+            " amount=:amount, price=:price, image=:image WHERE id=:id", nativeQuery = true)
+    void updateCoupon(@Param("companyId") Long companyId, @Param("category") Category category,
+                      @Param("title") String title, @Param("description") String description,
+                      @Param("startDate") Date startDate, @Param("endDate") Date endDate,
+                      @Param("amount") int amount, @Param("price") double price,
+                      @Param("image") String image, @Param("id") Long id);
+
     @Query(value = "DELETE FROM coupons WHERE id=?1", nativeQuery = true)
     void deleteCoupon(Long couponID);
     @Query(value="DELETE FROM customers_vs_coupons WHERE coupon_id=?1" , nativeQuery = true)

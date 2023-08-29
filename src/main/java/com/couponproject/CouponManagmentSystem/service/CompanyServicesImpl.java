@@ -70,10 +70,23 @@ public class CompanyServicesImpl implements CompanyServices {
     }
 
     @Override
-    public void updateCoupon(Coupon updetedCoupon) throws SQLException {
-        Coupon coupon1 = couponRepository.getCouponById(updetedCoupon.getId());
-        if (coupon1 != null && coupon1.getCompany().getId().equals(updetedCoupon.getCompany().getId())) {
-            couponRepository.updateCoupon(updetedCoupon);
+    public void updateCoupon(Coupon updatedCoupon) throws SQLException {
+        Coupon coupon1 = couponRepository.getCouponById(updatedCoupon.getId());
+
+        System.out.println(updatedCoupon);
+        if (coupon1 != null && coupon1.getCompany().getId().equals(updatedCoupon.getCompany().getId())) {
+            couponRepository.updateCoupon(
+                    updatedCoupon.getCompany().getId(),
+                    updatedCoupon.getCategory(),
+                    updatedCoupon.getTitle(),
+                    updatedCoupon.getDescription(),
+                    updatedCoupon.getStartDate(),
+                    updatedCoupon.getEndDate(),
+                    updatedCoupon.getAmount(),
+                    updatedCoupon.getPrice(),
+                    updatedCoupon.getImage(),
+                    updatedCoupon.getId()
+            );
         }
         else
             throw new SQLException("coupon_id and company_id can`t be updated");
